@@ -8,3 +8,6 @@ Currently only supports Tiled version 1.11.2, to my knowledge, likely supports e
 This module only supports drawing the first layer at the moment, however adding support for it will be easy and added next.
 
 Requires [Zune](/https://github.com/Scythe-Technology/zune), a Luau runtime, and [Raylib](/https://github.com/Scythe-Technology/luau-raylib) bindings made with the FFI library provided in Zune.
+
+
+My current implementation is kind of hacky and I will likely be handling the loading in a completely different manner eventually. You are expected to use the source rects (Tile IDs) and destination rects (Tiles) with DrawTexturePro.
