@@ -1,7 +1,7 @@
 # TMJ-Loader-for-Luau-Raylib
 
 
-This is a module for loading TMJ (JSON [Tiled](/https://www.mapeditor.org/) format).
+This is a module for loading TMJ (JSON [Tiled](https://www.mapeditor.org/) format).
 
 Currently only supports Tiled version 1.11.2, to my knowledge, likely supports earlier and later versions. TMJ lacks some features that the standard TMX format typically has, however it is far simpler to parse and implement.
 
