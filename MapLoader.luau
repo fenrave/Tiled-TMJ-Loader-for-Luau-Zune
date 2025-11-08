@@ -86,8 +86,6 @@ function MapLoader:LoadMap(Map: string, Atlas: string): (Map?, raylib.Texture2D?
         Mapped.Textures[0] = Texture
     
         buffer.writei32(Texture, 16, 10)
-        local ptr = zune.ffi.ptrFromAddress(Texture)
-        lib.GenTextureMipmaps(ptr)
     end
 
     local CurrentLayer: number
@@ -164,3 +162,4 @@ function MapLoader:LoadMap(Map: string, Atlas: string): (Map?, raylib.Texture2D?
 end
 
 return MapLoader
+
