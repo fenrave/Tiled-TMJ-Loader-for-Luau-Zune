@@ -1,12 +1,10 @@
+--!strict
 local serde: _zune_serde_json = zune.serde.json
 local fs: _zune_fs = zune.fs
 local raylib = require("@raylib")
 
 local lib = raylib.lib
-local const = raylib.const
 local struct = raylib.structs
-
-local MapList = {}
 
 local MapLoader = {}
 
@@ -42,14 +40,17 @@ Almost every instance of an array/table/dictionary will be defaulted to 1 in Lua
 
 +]]--
 
-function MapLoader:LoadMap(Map: string, Atlas: string): (Map, raylib.Texture2D)
+function MapLoader:LoadMap(Map: string, Atlas: string): (Map?, raylib.Texture2D?)
     
     local Raw: string = fs.readFile(Map)
-    print(Raw)
     local MapData = serde.decode(Raw)
 
     local Mapped: Map = {
-        TileInfo = {},
+        TileInfo = {
+            scale = vector.zero,
+            startposition = vector.zero,
+            LayerAmount = 0
+        },
         Tiles = {},
         TileIDs = {},
         Textures = {}
@@ -59,14 +60,14 @@ function MapLoader:LoadMap(Map: string, Atlas: string): (Map, raylib.Texture2D)
 
     local tilewidth: number = MapData["tilewidth"]
     local tileheight: number = MapData["tileheight"]
-    local tilesets: {[string]: any} = MapData["tilesets"]
+    local tilesets: {[string | number]: any} = MapData["tilesets"]
     local tilecount: number = tilesets[1]["tilecount"]
     local tilemargin: number = tilesets[1]["margin"]
     local tilespacing: number = tilesets[1]["spacing"]
 
     if not tilecount then
         error("Map has no embedded TSX")
-        return
+        return nil, nil
     else
         tilecount -= 1
     end
@@ -78,13 +79,15 @@ function MapLoader:LoadMap(Map: string, Atlas: string): (Map, raylib.Texture2D)
     local cY: number = 0
 
     local AtlasImg: raylib.Image = lib.LoadImage(Atlas)
+
+    
     
     local Texture: raylib.Texture2D = lib.LoadTextureFromImage(AtlasImg) do    
         Mapped.Textures[0] = Texture
     
         buffer.writei32(Texture, 16, 10)
-
-        lib.GenTextureMipmaps(Texture)
+        local ptr = zune.ffi.ptrFromAddress(Texture)
+        lib.GenTextureMipmaps(ptr)
     end
 
     local CurrentLayer: number
